@@ -2,6 +2,7 @@ package edu.dyds.movies.di
 
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.viewmodel.compose.viewModel
+import edu.dyds.movies.data.external.DataFromDI
 import edu.dyds.movies.presentation.MoviesViewModel
 import io.ktor.client.*
 import io.ktor.client.plugins.*
@@ -33,8 +34,14 @@ object MoviesDependencyInjector {
             }
         }
 
+    fun getDataFromDI(): DataFromDI{
+        return DataFromDI(tmdbHttpClient)
+    }
+
+    /*
     @Composable
     fun getMoviesViewModel(): MoviesViewModel {
         return viewModel { MoviesViewModel(tmdbHttpClient) }
     }
+    */
 }
