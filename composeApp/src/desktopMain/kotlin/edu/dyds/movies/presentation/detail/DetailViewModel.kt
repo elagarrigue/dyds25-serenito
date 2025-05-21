@@ -39,13 +39,13 @@ class DetailViewModel(
 
     private suspend fun getMovieDetails(id: Int): RemoteMovie? =
         try{
-            getTMDBMOvieDetais(id)
+            getTMDBMovieDetais(id)
         } catch (e: Exception){
             null
         }
 
 
-    private suspend fun getTMDBMOvieDetais(id: Int): RemoteMovie =
+    private suspend fun getTMDBMovieDetais(id: Int): RemoteMovie =
         tmdbHttpClient.get("/3/movie/$id").body()
 
     data class MovieDetailUiState(
