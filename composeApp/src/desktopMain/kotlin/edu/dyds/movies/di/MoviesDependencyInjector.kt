@@ -38,10 +38,9 @@ object MoviesDependencyInjector {
         return DataFromDI(tmdbHttpClient)
     }
 
-    /*
+
     @Composable
     fun getMoviesViewModel(): MoviesViewModel {
         return viewModel { MoviesViewModel(tmdbHttpClient) }
     }
-    */
 }
