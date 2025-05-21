@@ -82,20 +82,6 @@ class MoviesViewModel(
             }
     }
 
-    private suspend fun getMovieDetails(id: Int) =
-        try {
-            getTMDBMovieDetails(id)
-        } catch (e: Exception) {
-            null
-        }
-
-    private suspend fun getTMDBMovieDetails(id: Int): RemoteMovie =
-        tmdbHttpClient.get("/3/movie/$id").body()
-
-
-    private suspend fun getTMDBPopularMovies(): RemoteResult =
-        tmdbHttpClient.get("/3/discover/movie?sort_by=popularity.desc").body()
-
     data class MoviesUiState(
         val isLoading: Boolean = false,
         val movies: List<QualifiedMovie> = emptyList(),
