@@ -5,6 +5,8 @@ import edu.dyds.movies.domain.entity.Movie
 import edu.dyds.movies.domain.entity.QualifiedMovie
 import edu.dyds.movies.domain.usecase.GetPopularMoviesUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -17,6 +19,7 @@ class HomeViewModel (
     private val getPopularMoviesUseCase: GetPopularMoviesUseCase
 ) : ViewModel(){
     private val moviesStateMutableStateFlow = MutableStateFlow(MoviesUiState())
+    val state: StateFlow<MoviesUiState> = moviesStateMutableStateFlow.asStateFlow()
 
     init {
         loadMovies()
