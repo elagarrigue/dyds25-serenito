@@ -10,9 +10,11 @@ class DataFromDI(private val tmdbHttpClient: HttpClient,
 ) {
     private val cacheMovies: MutableList<RemoteMovie> = mutableListOf()
 
-    suspend fun getTMDBMovieDetails(id: Int): RemoteMovie =
-        tmdbHttpClient.get("/3/movie/$id").body()
+    suspend fun getTMDBMovieDetails(id: Int): String {
+        return tmdbHttpClient.get("/3/movie/$id").body()
+    }
 
-    suspend fun getTMDBPopularMovies(): RemoteResult =
-        tmdbHttpClient.get("/3/discover/movie?sort_by=popularity.desc").body()
+    suspend fun getTMDBPopularMovies(): String {
+        return tmdbHttpClient.get("/3/discover/movie?sort_by=popularity.desc").body()
+    }
 }
