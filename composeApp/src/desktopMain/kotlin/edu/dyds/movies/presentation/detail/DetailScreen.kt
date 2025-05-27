@@ -23,23 +23,24 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
-import dydsproject.composeapp.generated.resources.*
-import edu.dyds.movies.presentation.MoviesViewModel
 import edu.dyds.movies.domain.entity.Movie
 import edu.dyds.movies.presentation.utils.LoadingIndicator
 import edu.dyds.movies.presentation.utils.NoResults
+import dydsproject.composeapp.generated.resources.Res
+import dydsproject.composeapp.generated.resources.*
 import org.jetbrains.compose.resources.stringResource
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DetailScreen(viewModel: MoviesViewModel, id: Int, onBack: () -> Unit) {
+fun DetailScreen(
+    viewModel: DetailViewModel,
+    movieId: Int,
+    onBack: () -> Unit
+) {
+    val state by viewModel.state.collectAsState()
 
-    val state by viewModel.movieDetailStateFlow.collectAsState(MoviesViewModel.MovieDetailUiState())
-
-    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
-
-    LaunchedEffect(Unit) {
-        viewModel.getMovieDetail(id)
+    LaunchedEffect(movieId) {
+        viewModel.getMovieDetail(movieId)
     }
 
     MaterialTheme {
@@ -49,16 +50,15 @@ fun DetailScreen(viewModel: MoviesViewModel, id: Int, onBack: () -> Unit) {
                     DetailTopBar(
                         title = state.movie?.title ?: "",
                         onBack = onBack,
-                        scrollBehavior = scrollBehavior
+                        scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
                     )
                 }
             ) { padding ->
-
                 LoadingIndicator(enabled = state.isLoading, modifier = Modifier.padding(padding))
 
                 when {
                     state.movie != null -> MovieDetail(movie = state.movie!!, modifier = Modifier.padding(padding))
-                    state.isLoading.not() -> NoResults { viewModel.getMovieDetail(id) }
+                    !state.isLoading -> NoResults { viewModel.getMovieDetail(movieId) }
                 }
             }
         }
@@ -66,13 +66,8 @@ fun DetailScreen(viewModel: MoviesViewModel, id: Int, onBack: () -> Unit) {
 }
 
 @Composable
-private fun MovieDetail(
-    movie: Movie,
-    modifier: Modifier = Modifier
-) {
-    Column(
-        modifier = modifier.verticalScroll(rememberScrollState()),
-    ) {
+private fun MovieDetail(movie: Movie, modifier: Modifier = Modifier) {
+    Column(modifier = modifier.verticalScroll(rememberScrollState())) {
         AsyncImage(
             model = movie.backdrop ?: movie.poster,
             contentDescription = "",
@@ -127,9 +122,7 @@ private fun DetailTopBar(
     TopAppBar(
         title = { Text(text = title) },
         navigationIcon = {
-            IconButton(
-                onClick = onBack
-            ) {
+            IconButton(onClick = onBack) {
                 Icon(
                     Icons.AutoMirrored.Filled.ArrowBack,
                     contentDescription = "Back"

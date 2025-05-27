@@ -4,10 +4,10 @@ import edu.dyds.movies.domain.entity.Movie
 
 //Intermediarios entre los ViewModel y Repository, este en particular se encarga de obtener los detalles del repositorio
 
-class GetMovieDetailsUseCase(
+class GetMovieDetailUseCase(
     private val repository: MoviesRepository
-){
-    fun invokeMovieDetails(id: Int) : Movie? {
+) {
+    suspend fun invokeMovieDetails(id: Int): Movie? {
         return repository.getMovieDetails(id)
     }
 }
