@@ -1,7 +1,7 @@
 package edu.dyds.movies.di
 
 import edu.dyds.movies.data.external.MoviesRemoteDataSourceImpl
-import edu.dyds.movies.data.local.MoviesRepositoryImpl
+import edu.dyds.movies.data.MoviesRepositoryImpl
 import edu.dyds.movies.domain.usecase.GetMovieDetailUseCase
 import edu.dyds.movies.domain.usecase.GetPopularMoviesUseCase
 import edu.dyds.movies.presentation.detail.DetailViewModel
@@ -12,6 +12,7 @@ import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import kotlinx.serialization.json.Json
+import edu.dyds.movies.data.local.MoviesCacheImpl
 
 private const val API_KEY = "d18da1b5da16397619c688b0263cd281"
 
@@ -33,7 +34,8 @@ object MoviesDependencyInjector {
     }
 
     private val remoteDataSource = MoviesRemoteDataSourceImpl(tmdbHttpClient)
-    private val repository = MoviesRepositoryImpl(remoteDataSource)
+    private val cache = MoviesCacheImpl()
+    private val repository = MoviesRepositoryImpl(remoteDataSource,cache)
 
     // Factory methods para los ViewModels
     fun getHomeViewModel(): HomeViewModel {

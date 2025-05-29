@@ -1,5 +1,6 @@
-package edu.dyds.movies.data.local
+package edu.dyds.movies.data
 
+import edu.dyds.movies.data.local.MoviesCache
 import edu.dyds.movies.data.external.MoviesRemoteDataSource
 import edu.dyds.movies.data.external.RemoteMovie
 import edu.dyds.movies.domain.entity.Movie
@@ -9,21 +10,22 @@ import edu.dyds.movies.domain.repository.MoviesRepository
 private const val MIN_VOTE_AVERAGE = 6.0
 
 class MoviesRepositoryImpl(
-    private val remoteDataSource: MoviesRemoteDataSource
+    private val remoteDataSource: MoviesRemoteDataSource,
+    private val cache: MoviesCache
 ) : MoviesRepository {
-    private val cacheMovies: MutableList<RemoteMovie> = mutableListOf()
 
     override suspend fun getPopularMovies(): List<QualifiedMovie> {
-        val movies = cacheMovies.ifEmpty {
+        val movies = if (cache.isEmpty()) {
             try {
-                remoteDataSource.getPopularMovies().results.apply {
-                    cacheMovies.clear()
-                    cacheMovies.addAll(this)
+                remoteDataSource.getPopularMovies().results.also {
+                    cache.saveAll(it)
                 }
             } catch (e: Exception) {
                 e.message
                 emptyList()
             }
+        } else {
+            cache.getAll()
         }
 
         return movies.sortAndMap()
