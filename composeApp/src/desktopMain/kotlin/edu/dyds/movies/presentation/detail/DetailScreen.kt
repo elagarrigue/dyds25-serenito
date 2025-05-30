@@ -40,7 +40,9 @@ fun DetailScreen(
     val state by viewModel.state.collectAsState()
 
     LaunchedEffect(movieId) {
-        viewModel.getMovieDetail(movieId)
+        if (viewModel.state.value.movie == null) {
+            viewModel.getMovieDetail(movieId)
+        }
     }
 
     MaterialTheme {

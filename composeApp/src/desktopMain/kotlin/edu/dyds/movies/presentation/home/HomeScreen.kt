@@ -44,7 +44,9 @@ fun HomeScreen(
     val state by viewModel.state.collectAsState()
 
     LaunchedEffect(Unit) {
-        viewModel.getAllMovies()
+        if (state.movies.isEmpty()) {
+            viewModel.getAllMovies()
+        }
     }
 
     MaterialTheme {
