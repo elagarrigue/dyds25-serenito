@@ -40,7 +40,6 @@ object MoviesDependencyInjector {
     private val cache = MoviesCacheImpl()
     private val repository = MoviesRepositoryImpl(remoteDataSource,cache)
 
-    // Factory methods para los ViewModels
     @Composable
     fun getHomeViewModel(): HomeViewModel {
         return viewModel { HomeViewModel(GetPopularMoviesUseCase(repository))}
