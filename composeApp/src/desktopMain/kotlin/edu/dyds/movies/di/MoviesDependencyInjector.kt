@@ -1,5 +1,8 @@
 package edu.dyds.movies.di
 
+import androidx.compose.runtime.Composable
+
+import androidx.lifecycle.viewmodel.compose.viewModel
 import edu.dyds.movies.data.external.MoviesRemoteDataSourceImpl
 import edu.dyds.movies.data.MoviesRepositoryImpl
 import edu.dyds.movies.domain.usecase.GetMovieDetailUseCase
@@ -38,11 +41,13 @@ object MoviesDependencyInjector {
     private val repository = MoviesRepositoryImpl(remoteDataSource,cache)
 
     // Factory methods para los ViewModels
+    @Composable
     fun getHomeViewModel(): HomeViewModel {
-        return HomeViewModel(GetPopularMoviesUseCase(repository))
+        return viewModel { HomeViewModel(GetPopularMoviesUseCase(repository))}
     }
 
+    @Composable
     fun getDetailViewModel(): DetailViewModel {
-        return DetailViewModel(GetMovieDetailUseCase(repository))
+        return viewModel { DetailViewModel(GetMovieDetailUseCase(repository)) }
     }
 }

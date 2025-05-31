@@ -60,7 +60,7 @@ fun DetailScreen(
 
                 when {
                     state.movie != null -> MovieDetail(movie = state.movie!!, modifier = Modifier.padding(padding))
-                    state.hasRequested && !state.isLoading -> NoResults { viewModel.getMovieDetail(movieId) }
+                    state.isLoading -> NoResults { viewModel.getMovieDetail(movieId) }
                 }
             }
         }
