@@ -32,13 +32,18 @@ class MoviesRepositoryImpl(
     }
 
     override suspend fun getMovieDetails(id: Int): Movie? {
-        return try {
-            remoteDataSource.getMovieDetails(id).toDomainMovie()
-        } catch (e: Exception) {
-            e.message
-            null
+        val movieAux = cache.getFromId(id)
+        if(movieAux != null){
+            return movieAux.toDomainMovie()
         }
-    }
+        return try {
+                remoteDataSource.getMovieDetails(id).toDomainMovie()
+        } catch (e: Exception) {
+                e.message
+                null
+            }
+        }
+
 
     private fun List<RemoteMovie>.sortAndMap(): List<QualifiedMovie> {
         return this

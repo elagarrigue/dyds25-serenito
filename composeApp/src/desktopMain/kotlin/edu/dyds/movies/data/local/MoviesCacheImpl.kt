@@ -17,4 +17,8 @@ class MoviesCacheImpl : MoviesCache {
     override fun clear() {
         cachedMovies.clear()
     }
+
+    override fun getFromId(id: Int): RemoteMovie? {
+        return cachedMovies.find { movie -> movie.id == id }
+    }
 }

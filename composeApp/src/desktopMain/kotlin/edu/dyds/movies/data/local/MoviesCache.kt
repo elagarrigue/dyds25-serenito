@@ -7,4 +7,5 @@ interface MoviesCache {
     fun isEmpty(): Boolean
     fun saveAll(movies: List<RemoteMovie>)
     fun clear()
+    fun getFromId(id: Int): RemoteMovie?
 }
