@@ -62,7 +62,6 @@ fun HomeScreen(
                 modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
             ) { padding ->
                 LoadingIndicator(state.isLoading)
-
                 when {
                     state.movies.isNotEmpty() -> MovieGrid(padding, state.movies, onGoodMovieClick)
                     !state.isLoading -> NoResults { viewModel.getAllMovies() }
