@@ -6,6 +6,7 @@ import edu.dyds.movies.data.external.RemoteMovie
 import edu.dyds.movies.domain.entity.Movie
 import edu.dyds.movies.domain.entity.QualifiedMovie
 import edu.dyds.movies.domain.repository.MoviesRepository
+import toDomainMovie
 
 private const val MIN_VOTE_AVERAGE = 6.0
 
