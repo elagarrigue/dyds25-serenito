@@ -1,59 +1,38 @@
 package edu.dyds.movies.data
 
-import edu.dyds.movies.data.local.MoviesCache
+import edu.dyds.movies.data.local.MoviesLocalDataSource
 import edu.dyds.movies.data.external.MoviesRemoteDataSource
-import edu.dyds.movies.data.external.RemoteMovie
 import edu.dyds.movies.domain.entity.Movie
-import edu.dyds.movies.domain.entity.QualifiedMovie
 import edu.dyds.movies.domain.repository.MoviesRepository
-import toDomainMovie
-
-private const val MIN_VOTE_AVERAGE = 6.0
 
 class MoviesRepositoryImpl(
     private val remoteDataSource: MoviesRemoteDataSource,
-    private val cache: MoviesCache
+    private val localDataSource: MoviesLocalDataSource
 ) : MoviesRepository {
 
-    override suspend fun getPopularMovies(): List<QualifiedMovie> {
-        val movies = if (cache.isEmpty()) {
-            try {
-                remoteDataSource.getPopularMovies().results.also {
-                    cache.saveAll(it)
-                }
-            } catch (e: Exception) {
-                e.message
-                emptyList()
+    override suspend fun getPopularMovies(): List<Movie> {
+        return try {
+            if (localDataSource.isEmpty()) {
+                val remoteMovies = remoteDataSource.getPopularMovies()
+                localDataSource.saveAll(remoteMovies)
+                remoteMovies
+            } else {
+                localDataSource.getAll()
             }
-        } else {
-            cache.getAll()
+        } catch (e: Exception) {
+            e.message?.let { println(it) }
+            emptyList()
         }
-
-        return movies.sortAndMap()
     }
 
     override suspend fun getMovieDetails(id: Int): Movie? {
-        val movieAux = cache.getFromId(id)
-        if(movieAux != null){
-            return movieAux.toDomainMovie()
-        }
         return try {
-                remoteDataSource.getMovieDetails(id).toDomainMovie()
+            localDataSource.getFromId(id) ?:
+                remoteDataSource.getMovieDetails(id)
         } catch (e: Exception) {
-                e.message
-                null
-            }
+            e.message?.let { println(it) }
+            null
         }
-
-
-    private fun List<RemoteMovie>.sortAndMap(): List<QualifiedMovie> {
-        return this
-            .sortedByDescending { it.voteAverage }
-            .map {
-                QualifiedMovie(
-                    movie = it.toDomainMovie(),
-                    isGoodMovie = it.voteAverage >= MIN_VOTE_AVERAGE
-                )
-            }
     }
+
 }

@@ -15,7 +15,7 @@ import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import kotlinx.serialization.json.Json
-import edu.dyds.movies.data.local.MoviesCacheImpl
+import edu.dyds.movies.data.local.MoviesLocalDataSourceImpl
 
 private const val API_KEY = "d18da1b5da16397619c688b0263cd281"
 
@@ -37,7 +37,7 @@ object MoviesDependencyInjector {
     }
 
     private val remoteDataSource = MoviesRemoteDataSourceImpl(tmdbHttpClient)
-    private val cache = MoviesCacheImpl()
+    private val cache = MoviesLocalDataSourceImpl()
     private val repository = MoviesRepositoryImpl(remoteDataSource,cache)
 
     @Composable
