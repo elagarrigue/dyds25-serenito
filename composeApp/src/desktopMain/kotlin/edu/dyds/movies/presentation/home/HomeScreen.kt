@@ -8,7 +8,13 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
@@ -17,28 +23,31 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogWindow
 import coil3.compose.AsyncImage
+import edu.dyds.movies.domain.entity.Movie
+import edu.dyds.movies.presentation.utils.LoadingIndicator
+import edu.dyds.movies.presentation.utils.NoResults
 import dydsproject.composeapp.generated.resources.Res
 import dydsproject.composeapp.generated.resources.app_name
 import dydsproject.composeapp.generated.resources.error
-import edu.dyds.movies.presentation.MoviesViewModel
-import edu.dyds.movies.domain.entity.Movie
 import edu.dyds.movies.domain.entity.QualifiedMovie
-import edu.dyds.movies.presentation.utils.LoadingIndicator
-import edu.dyds.movies.presentation.utils.NoResults
 import org.jetbrains.compose.resources.stringResource
+import androidx.compose.foundation.Image
+import androidx.compose.ui.res.painterResource
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
-    viewModel: MoviesViewModel,
+    viewModel: HomeViewModel,
     onGoodMovieClick: (Movie) -> Unit
 ) {
+    val state by viewModel.state.collectAsState()
 
     LaunchedEffect(Unit) {
-        viewModel.getAllMovies()
+        if (state.movies.isEmpty()) {
+            viewModel.getAllMovies()
+        }
     }
-
-    val state by viewModel.moviesStateFlow.collectAsState(MoviesViewModel.MoviesUiState())
 
     MaterialTheme {
         Surface {
@@ -52,12 +61,10 @@ fun HomeScreen(
                 },
                 modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
             ) { padding ->
-
                 LoadingIndicator(state.isLoading)
-
                 when {
                     state.movies.isNotEmpty() -> MovieGrid(padding, state.movies, onGoodMovieClick)
-                    state.isLoading.not() -> NoResults { viewModel.getAllMovies() }
+                    !state.isLoading -> NoResults { viewModel.getAllMovies() }
                 }
             }
         }
@@ -88,9 +95,7 @@ private fun MovieGrid(
 
 @Composable
 private fun GoodMovieItem(movie: Movie, onClick: () -> Unit) {
-    Column(
-        modifier = Modifier.clickable { onClick() }
-    ) {
+    Column(modifier = Modifier.clickable { onClick() }) {
         AsyncImage(
             model = movie.poster,
             contentDescription = movie.title,
@@ -113,12 +118,11 @@ private fun GoodMovieItem(movie: Movie, onClick: () -> Unit) {
 private fun BadMovieItem(movie: Movie) {
     var dialogState by remember { mutableStateOf(false) }
 
-    Column(
-        modifier = Modifier.alpha(0.7f).clickable { dialogState = true }
-    ) {
+    Column(modifier = Modifier.alpha(0.7f).clickable { dialogState = true }) {
         AsyncImage(
             model = movie.poster,
-            contentDescription = movie.title,
+            contentDescription
+            = movie.title,
             contentScale = ContentScale.Crop,
             modifier = Modifier
                 .fillMaxWidth()
@@ -139,8 +143,8 @@ private fun BadMovieItem(movie: Movie) {
         onCloseRequest = { dialogState = false },
         visible = dialogState
     ) {
-        AsyncImage(
-            model = this::class.java.getResource("/images/too_bad.png")?.toString(),
+        Image(
+            painter = painterResource("images/too_bad.png"),
             contentDescription = null,
             contentScale = ContentScale.Fit,
             modifier = Modifier
