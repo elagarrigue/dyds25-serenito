@@ -36,9 +36,9 @@ object MoviesDependencyInjector {
         }
     }
 
-    private val remoteDataSource = MoviesRemoteDataSourceImpl(tmdbHttpClient)
-    private val cache = MoviesLocalDataSourceImpl()
-    private val repository = MoviesRepositoryImpl(remoteDataSource,cache)
+    private val moviesRemoteDataSource = MoviesRemoteDataSourceImpl(tmdbHttpClient)
+    private val moviesLocalDataSource = MoviesLocalDataSourceImpl()
+    private val repository = MoviesRepositoryImpl(moviesRemoteDataSource,moviesLocalDataSource)
 
     @Composable
     fun getHomeViewModel(): HomeViewModel {
