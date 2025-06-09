@@ -18,7 +18,7 @@ class DetailViewModel(
     fun getMovieDetail(id: Int) {
         viewModelScope.launch {
             _state.emit(DetailState(isLoading = true))
-            val movie = getMovieDetailUseCase.invokeMovieDetails(id)
+            val movie = getMovieDetailUseCase.invoke(id)
             _state.emit(DetailState(isLoading = false, movie = movie))
         }
     }

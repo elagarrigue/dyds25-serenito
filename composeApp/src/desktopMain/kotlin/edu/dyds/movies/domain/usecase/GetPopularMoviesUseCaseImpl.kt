@@ -8,7 +8,7 @@ const val MIN_VOTE_AVERAGE = 6.0
 class GetPopularMoviesUseCaseImpl(
     private val repository: MoviesRepository
 ) : GetPopularMoviesUseCase {
-    override suspend fun invokePopularMovies(): List<QualifiedMovie> {
+    override suspend fun invoke(): List<QualifiedMovie> {
         return repository.getPopularMovies().sortAndMap()
     }
 
