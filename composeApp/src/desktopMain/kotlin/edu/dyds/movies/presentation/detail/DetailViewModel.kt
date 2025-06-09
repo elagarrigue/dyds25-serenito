@@ -1,4 +1,30 @@
 package edu.dyds.movies.presentation.detail
 
-//Como tenemos MoviesViewModel, que se encarga de manejar la lógica de la pantalla principal (lista de peliculas) y de la pantalla para los detalles
-//Lo dividimos en dos para cumplir con el principio S de SOLID, donde tenemos entonces por separado el manejo de esas dos pantallas
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import edu.dyds.movies.domain.entity.Movie
+import edu.dyds.movies.domain.usecase.GetMovieDetailUseCase
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
+
+class DetailViewModel(
+    private val getMovieDetailUseCase: GetMovieDetailUseCase
+) : ViewModel() {
+
+    private val _state = MutableStateFlow(DetailState())
+    val state: StateFlow<DetailState> = _state
+
+    fun getMovieDetail(id: Int) {
+        viewModelScope.launch {
+            _state.emit(DetailState(isLoading = true))
+            val movie = getMovieDetailUseCase.invoke(id)
+            _state.emit(DetailState(isLoading = false, movie = movie))
+        }
+    }
+}
+
+data class DetailState(
+    val isLoading: Boolean = false,
+    val movie: Movie? = null
+)
