@@ -2,8 +2,10 @@ import edu.dyds.movies.data.local.MoviesLocalDataSource
 import edu.dyds.movies.data.local.MoviesLocalDataSourceImpl
 import edu.dyds.movies.domain.entity.Movie
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runTest
 import org.junit.Before
-import kotlin.test.Test
+import org.junit.Test
+import utils.TestDataFactory
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertNotNull
@@ -12,63 +14,53 @@ import kotlin.test.assertTrue
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class LocalDataSourceTest {
-    private lateinit var localDataSourceTest: MoviesLocalDataSource
+
+    private lateinit var localDataSource: MoviesLocalDataSource
     private lateinit var fakeMovie: Movie
 
     @Before
-    fun setUp(){
-        localDataSourceTest = MoviesLocalDataSourceImpl()
-        fakeMovie = Movie(
-            id = 1,
-            title = "test movie",
-            overview = "test overview",
-            poster = "poster.jpg",
-            backdrop = null,
-            originalLanguage = "en",
-            originalTitle = "Test movie original",
-            popularity = 10.0,
-            releaseDate = "2025-06-16",
-            voteAverage = 8.0
-        )
+    fun setUp() {
+        localDataSource = MoviesLocalDataSourceImpl()
+        fakeMovie = TestDataFactory.createMovie(1) // Aquí usas tu factory
     }
 
     @Test
-    fun `isEmpty return true when no movies are present`(){
-        assertTrue(localDataSourceTest.isEmpty())
+    fun `isEmpty returns true when no movies are present`() = runTest {
+        assertTrue(localDataSource.isEmpty())
     }
 
     @Test
-    fun `isEmpty return false when movies are present`(){
-        localDataSourceTest.saveAll(listOf(fakeMovie))
-        assertFalse(localDataSourceTest.isEmpty())
+    fun `isEmpty returns false when movies are present`() = runTest {
+        localDataSource.saveAll(listOf(fakeMovie))
+        assertFalse(localDataSource.isEmpty())
     }
 
     @Test
-    fun `getAll movies return all saved movies`(){
-        localDataSourceTest.saveAll(listOf(fakeMovie))
-        val allMovies = localDataSourceTest.getAll()
+    fun `getAll returns all saved movies`() = runTest {
+        localDataSource.saveAll(listOf(fakeMovie))
+        val allMovies = localDataSource.getAll()
         assertEquals(1, allMovies.size)
         assertEquals(fakeMovie, allMovies[0])
     }
 
     @Test
-    fun `getFromId return the matching movie if exists`(){
-        localDataSourceTest.saveAll(listOf(fakeMovie))
-        val movie = localDataSourceTest.getFromId(1)
+    fun `getFromId returns the matching movie if exists`() = runTest {
+        localDataSource.saveAll(listOf(fakeMovie))
+        val movie = localDataSource.getFromId(1)
         assertNotNull(movie)
         assertEquals(fakeMovie, movie)
     }
 
     @Test
-    fun `getFromId return null if the movie doesn't exist`(){
-        val movie = localDataSourceTest.getFromId(999)
+    fun `getFromId returns null if the movie doesn't exist`() = runTest {
+        val movie = localDataSource.getFromId(999)
         assertNull(movie)
     }
 
     @Test
-    fun `clear should clear all movies from cache`(){
-        localDataSourceTest.saveAll(listOf(fakeMovie))
-        localDataSourceTest.clear()
-        assertTrue(localDataSourceTest.isEmpty())
+    fun `clear clears all movies from cache`() = runTest {
+        localDataSource.saveAll(listOf(fakeMovie))
+        localDataSource.clear()
+        assertTrue(localDataSource.isEmpty())
     }
 }

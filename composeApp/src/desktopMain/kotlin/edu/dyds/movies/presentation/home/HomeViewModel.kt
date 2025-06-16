@@ -22,7 +22,8 @@ class HomeViewModel(
                 val movies = getMoviesUseCase.invoke()
                 _state.emit(HomeState(isLoading = false, movies = movies))
             } catch (e: Exception) {
-                _state.emit(HomeState(isLoading = false, movies = emptyList()))
+                e.message
+                _state.emit(HomeState(isLoading = false, movies = emptyList())) //Consultar a Ema
             }
         }
     }
