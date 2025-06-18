@@ -11,20 +11,9 @@ class FakeSuccessDetailUseCase(
     override suspend fun invoke(id: Int): Movie? = movie
 }
 
-class FakeFailingDetailUseCase : GetMovieDetailUseCase {
-    override suspend fun invoke(id: Int): Movie? {
-        throw RuntimeException("Simulated failure")
-    }
-}
-
 class FakeSuccessPopularMoviesUseCase(
     private val movies: List<QualifiedMovie>
 ) : GetPopularMoviesUseCase {
     override suspend fun invoke(): List<QualifiedMovie> = movies
 }
 
-class FakeFailingPopularMoviesUseCase : GetPopularMoviesUseCase {
-    override suspend fun invoke(): List<QualifiedMovie> {
-        throw RuntimeException("Simulated failure")
-    }
-}

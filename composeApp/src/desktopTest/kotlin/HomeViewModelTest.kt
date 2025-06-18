@@ -10,10 +10,10 @@ import utils.*
 class HomeViewModelTest {
 
     @Test
-    fun `state inicial tiene que ser una lista vacia y no cargando`() {
+    fun `initial state has to be empty list and loading`() {
         val viewModel = HomeViewModel(FakeSuccessPopularMoviesUseCase(emptyList()))
         val state = viewModel.state.value
-        assertFalse(state.isLoading)
+        assertTrue(state.isLoading)
         assertTrue(state.movies.isEmpty())
     }
 
@@ -29,12 +29,4 @@ class HomeViewModelTest {
         assertEquals(movies, state.movies)
     }
 
-    @Test
-    fun `cuando getAllMovies lanza excepcion, state vuelve a no cargando y lista vacia`() = runTest {
-        val viewModel = HomeViewModel(FakeFailingPopularMoviesUseCase())
-        viewModel.getAllMovies()
-        val state = viewModel.state.first { !it.isLoading }
-        assertFalse(state.isLoading)
-        assertTrue(state.movies.isEmpty())
-    }
 }

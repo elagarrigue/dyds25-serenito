@@ -17,19 +17,13 @@ class HomeViewModel(
 
     fun getAllMovies() {
         viewModelScope.launch {
-            _state.emit(HomeState(isLoading = true))
-            try {
-                val movies = getMoviesUseCase.invoke()
-                _state.emit(HomeState(isLoading = false, movies = movies))
-            } catch (e: Exception) {
-                e.message
-                _state.emit(HomeState(isLoading = false, movies = emptyList())) //Consultar a Ema
-            }
+            val movies = getMoviesUseCase.invoke()
+            _state.emit(HomeState(isLoading = false, movies = movies))
         }
     }
 }
 
 data class HomeState(
-    val isLoading: Boolean = false,
+    val isLoading: Boolean = true,
     val movies: List<QualifiedMovie> = emptyList()
 )

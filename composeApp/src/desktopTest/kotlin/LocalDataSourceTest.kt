@@ -21,7 +21,7 @@ class LocalDataSourceTest {
     @Before
     fun setUp() {
         localDataSource = MoviesLocalDataSourceImpl()
-        fakeMovie = TestDataFactory.createMovie(1) // Aquí usas tu factory
+        fakeMovie = TestDataFactory.createMovie(1)
     }
 
     @Test
