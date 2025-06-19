@@ -1,13 +1,14 @@
-import edu.dyds.movies.data.MoviesRepositoryImpl
+package edu.dyds.movies.data
+
 import edu.dyds.movies.data.external.MoviesRemoteDataSource
 import edu.dyds.movies.data.local.MoviesLocalDataSource
 import edu.dyds.movies.domain.entity.Movie
+import edu.dyds.movies.fakes.TestDataFactory
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
-import org.junit.Assert.*
+import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
-import utils.TestDataFactory
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class RepositoryTest {
@@ -29,8 +30,8 @@ class RepositoryTest {
     fun `getPopularMovies returns local data if not empty`() = runTest {
         val result = repository.getPopularMovies()
 
-        assertEquals(1, result.size)
-        assertEquals(sampleMovie.title, result.first().title)
+        Assert.assertEquals(1, result.size)
+        Assert.assertEquals(sampleMovie.title, result.first().title)
     }
 
     @Test
@@ -42,9 +43,9 @@ class RepositoryTest {
 
         val result = repository.getPopularMovies()
 
-        assertEquals(1, result.size)
-        assertEquals(sampleMovie.title, result.first().title)
-        assertEquals(1, local.getAll().size)  // Verificamos que guardó en local
+        Assert.assertEquals(1, result.size)
+        Assert.assertEquals(sampleMovie.title, result.first().title)
+        Assert.assertEquals(1, local.getAll().size)  // Verificamos que guardó en local
     }
 
     @Test
@@ -55,15 +56,15 @@ class RepositoryTest {
 
         val result = repository.getPopularMovies()
 
-        assertTrue(result.isEmpty())
+        Assert.assertTrue(result.isEmpty())
     }
 
     @Test
     fun `getMovieDetails returns local movie if present`() = runTest {
         val result = repository.getMovieDetails(sampleMovie.id)
 
-        assertNotNull(result)
-        assertEquals(sampleMovie.title, result?.title)
+        Assert.assertNotNull(result)
+        Assert.assertEquals(sampleMovie.title, result?.title)
     }
 
     @Test
@@ -74,8 +75,8 @@ class RepositoryTest {
 
         val result = repository.getMovieDetails(sampleMovie.id)
 
-        assertNotNull(result)
-        assertEquals(sampleMovie.title, result?.title)
+        Assert.assertNotNull(result)
+        Assert.assertEquals(sampleMovie.title, result?.title)
     }
 
     @Test
@@ -86,7 +87,7 @@ class RepositoryTest {
 
         val result = repository.getMovieDetails(sampleMovie.id)
 
-        assertNull(result)
+        Assert.assertNull(result)
     }
 
 

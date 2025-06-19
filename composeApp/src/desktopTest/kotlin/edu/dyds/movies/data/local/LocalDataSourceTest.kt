@@ -1,11 +1,11 @@
-import edu.dyds.movies.data.local.MoviesLocalDataSource
-import edu.dyds.movies.data.local.MoviesLocalDataSourceImpl
+package edu.dyds.movies.data.local
+
 import edu.dyds.movies.domain.entity.Movie
+import edu.dyds.movies.fakes.TestDataFactory
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
-import utils.TestDataFactory
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertNotNull

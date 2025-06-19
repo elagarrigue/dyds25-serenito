@@ -1,10 +1,12 @@
-import edu.dyds.movies.presentation.home.HomeViewModel
+package edu.dyds.movies.presentation.home
+
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
-import org.junit.Assert.*
+import org.junit.Assert
 import org.junit.Test
-import utils.*
+import edu.dyds.movies.fakes.FakeSuccessPopularMoviesUseCase
+import edu.dyds.movies.fakes.TestDataFactory
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class HomeViewModelTest {
@@ -13,12 +15,12 @@ class HomeViewModelTest {
     fun `initial state has to be empty list and loading`() {
         val viewModel = HomeViewModel(FakeSuccessPopularMoviesUseCase(emptyList()))
         val state = viewModel.state.value
-        assertTrue(state.isLoading)
-        assertTrue(state.movies.isEmpty())
+        Assert.assertTrue(state.isLoading)
+        Assert.assertTrue(state.movies.isEmpty())
     }
 
     @Test
-    fun `cuando getAllMovies es exitoso, state se actualiza con las peliculas`() = runTest {
+    fun `when getAllMovies succeeds, the state is updated with the movies`() = runTest {
         val movies = listOf(
             TestDataFactory.createQualifiedMovie(1),
             TestDataFactory.createQualifiedMovie(2)
@@ -26,7 +28,7 @@ class HomeViewModelTest {
         val viewModel = HomeViewModel(FakeSuccessPopularMoviesUseCase(movies))
         viewModel.getAllMovies()
         val state = viewModel.state.first { !it.isLoading }
-        assertEquals(movies, state.movies)
+        Assert.assertEquals(movies, state.movies)
     }
 
 }

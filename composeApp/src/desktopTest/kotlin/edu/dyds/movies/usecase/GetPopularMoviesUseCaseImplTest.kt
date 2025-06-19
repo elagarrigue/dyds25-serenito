@@ -1,8 +1,11 @@
+package edu.dyds.movies.usecase
+
+import FakeMoviesRepository
 import edu.dyds.movies.domain.usecase.GetPopularMoviesUseCaseImpl
+import edu.dyds.movies.fakes.TestDataFactory
 import kotlinx.coroutines.runBlocking
-import org.junit.Assert.*
+import org.junit.Assert
 import org.junit.Test
-import utils.*
 
 class GetPopularMoviesUseCaseImplTest {
 
@@ -20,14 +23,14 @@ class GetPopularMoviesUseCaseImplTest {
 
         val result = useCase.invoke()
 
-        assertTrue(fakeRepository.getPopularMoviesCalled)
-        assertEquals(3, result.size)
-        assertEquals(2, result[0].movie.id)
-        assertEquals(3, result[1].movie.id)
-        assertEquals(1, result[2].movie.id)
-        assertTrue(result[0].isGoodMovie)
-        assertTrue(result[1].isGoodMovie)
-        assertFalse(result[2].isGoodMovie)
+        Assert.assertTrue(fakeRepository.getPopularMoviesCalled)
+        Assert.assertEquals(3, result.size)
+        Assert.assertEquals(2, result[0].movie.id)
+        Assert.assertEquals(3, result[1].movie.id)
+        Assert.assertEquals(1, result[2].movie.id)
+        Assert.assertTrue(result[0].isGoodMovie)
+        Assert.assertTrue(result[1].isGoodMovie)
+        Assert.assertFalse(result[2].isGoodMovie)
     }
 
     @Test
@@ -36,7 +39,7 @@ class GetPopularMoviesUseCaseImplTest {
 
         val result = useCase.invoke()
 
-        assertTrue(fakeRepository.getPopularMoviesCalled)
-        assertTrue(result.isEmpty())
+        Assert.assertTrue(fakeRepository.getPopularMoviesCalled)
+        Assert.assertTrue(result.isEmpty())
     }
 }

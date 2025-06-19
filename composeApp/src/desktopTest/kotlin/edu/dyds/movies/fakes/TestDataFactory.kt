@@ -1,4 +1,4 @@
-package utils
+package edu.dyds.movies.fakes
 
 import edu.dyds.movies.domain.entity.Movie
 import edu.dyds.movies.domain.entity.QualifiedMovie

@@ -1,8 +1,11 @@
+package edu.dyds.movies.usecase
+
+import FakeMoviesRepository
 import edu.dyds.movies.domain.usecase.GetMovieDetailUseCaseImpl
+import edu.dyds.movies.fakes.TestDataFactory
 import kotlinx.coroutines.runBlocking
-import org.junit.Assert.*
+import org.junit.Assert
 import org.junit.Test
-import utils.*
 
 class GetMovieDetailUseCaseImplTest {
 
@@ -16,8 +19,8 @@ class GetMovieDetailUseCaseImplTest {
 
         val result = useCase.invoke(1)
 
-        assertEquals(movie, result)
-        assertEquals(1, fakeRepository.lastIdRequested)
+        Assert.assertEquals(movie, result)
+        Assert.assertEquals(1, fakeRepository.lastIdRequested)
     }
 
     @Test
@@ -26,7 +29,7 @@ class GetMovieDetailUseCaseImplTest {
 
         val result = useCase.invoke(999)
 
-        assertNull(result)
-        assertEquals(999, fakeRepository.lastIdRequested)
+        Assert.assertNull(result)
+        Assert.assertEquals(999, fakeRepository.lastIdRequested)
     }
 }
