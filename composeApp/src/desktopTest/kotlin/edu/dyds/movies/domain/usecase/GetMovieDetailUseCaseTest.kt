@@ -1,13 +1,12 @@
-package edu.dyds.movies.usecase
+package edu.dyds.movies.domain.usecase
 
 import FakeMoviesRepository
-import edu.dyds.movies.domain.usecase.GetMovieDetailUseCaseImpl
 import edu.dyds.movies.fakes.TestDataFactory
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test
 
-class GetMovieDetailUseCaseImplTest {
+class GetMovieDetailUseCaseTest {
 
     private val fakeRepository = FakeMoviesRepository()
     private val useCase = GetMovieDetailUseCaseImpl(fakeRepository)

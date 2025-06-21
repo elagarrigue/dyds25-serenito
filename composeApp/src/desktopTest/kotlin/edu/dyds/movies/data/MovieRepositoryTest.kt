@@ -11,7 +11,7 @@ import org.junit.Before
 import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class RepositoryTest {
+class MovieRepositoryTest {
 
     private lateinit var sampleMovie: Movie
     private lateinit var local: FakeLocalDataSource
