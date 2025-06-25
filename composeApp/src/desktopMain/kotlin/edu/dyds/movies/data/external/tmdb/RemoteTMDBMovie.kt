@@ -1,4 +1,4 @@
-package edu.dyds.movies.data.external
+package edu.dyds.movies.data.external.tmdb
 
 import edu.dyds.movies.domain.entity.Movie
 import kotlinx.serialization.SerialName
@@ -7,13 +7,13 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class RemoteResult(
     val page: Int,
-    val results: List<RemoteMovie>,
+    val results: List<RemoteTMBDMovie>,
     @SerialName("total_pages") val totalPages: Int,
     @SerialName("total_results") val totalResults: Int
 )
 
 @Serializable
-data class RemoteMovie(
+data class RemoteTMBDMovie(
     val id: Int,
     val title: String,
     val overview: String,

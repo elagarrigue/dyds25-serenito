@@ -8,5 +8,5 @@ interface MoviesLocalDataSource {
     fun isEmpty(): Boolean
     fun saveAll(movies: List<Movie>)
     fun clear()
-    fun getFromId(id: Int): Movie?
+    fun getFromTitle(title: String): Movie?
 }

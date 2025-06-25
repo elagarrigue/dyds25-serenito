@@ -19,16 +19,16 @@ fun Navigation() {
             HomeScreen(
                 viewModel = MoviesDependencyInjector.getHomeViewModel(),
                 onGoodMovieClick = { movie ->
-                    navController.navigate("detail/${movie.id}")
+                    navController.navigate("detail/${movie.title}")
                 }
             )
         }
-        composable("detail/{movieId}") { backStackEntry ->
-            val movieId = backStackEntry.arguments?.getString("movieId")?.toIntOrNull()
-            movieId?.let {
+        composable("detail/{title}") { backStackEntry ->
+            val title = backStackEntry.arguments?.getString("title")
+            title?.let {
                 DetailScreen(
                     viewModel = MoviesDependencyInjector.getDetailViewModel(),
-                    movieId = it,
+                    title = it,
                     onBack = { navController.popBackStack() }
                 )
             }

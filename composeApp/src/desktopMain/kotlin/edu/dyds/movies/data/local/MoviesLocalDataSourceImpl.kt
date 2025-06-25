@@ -18,7 +18,8 @@ class MoviesLocalDataSourceImpl : MoviesLocalDataSource {
         cachedMovies.clear()
     }
 
-    override fun getFromId(id: Int): Movie? {
-        return cachedMovies.find { movie -> movie.id == id }
+    override fun getFromTitle(title: String): Movie? {
+        println("Buscando en localDataSource con título: $title")
+        return null
     }
 }
