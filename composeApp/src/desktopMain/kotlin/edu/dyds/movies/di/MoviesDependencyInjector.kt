@@ -2,13 +2,11 @@ package edu.dyds.movies.di
 
 import MoviesRemoteDataSourceImpl
 import androidx.compose.runtime.Composable
-
 import androidx.lifecycle.viewmodel.compose.viewModel
 import edu.dyds.movies.data.MoviesRepositoryImpl
 import edu.dyds.movies.data.external.broker.MoviesDetailBroker
 import edu.dyds.movies.data.external.omdb.OMDBMoviesDetailSource
-import edu.dyds.movies.data.external.tmdb.TMDBMoviesDetailSource
-import edu.dyds.movies.data.external.tmdb.TMDBMoviesListSource
+import edu.dyds.movies.data.external.tmdb.TMDBMoviesExternalSource
 import edu.dyds.movies.presentation.detail.DetailViewModel
 import edu.dyds.movies.presentation.home.HomeViewModel
 import io.ktor.client.*
@@ -57,13 +55,18 @@ object MoviesDependencyInjector {
         }
     }
 
-    private val tmdbListSource = TMDBMoviesListSource(tmdbHttpClient)
-    private val tmdbDetailSource = TMDBMoviesDetailSource(tmdbHttpClient)
+    private val tmdbSource = TMDBMoviesExternalSource(tmdbHttpClient)
+
     private val omdbDetailSource = OMDBMoviesDetailSource(omdbHttpClient)
 
-    private val moviesDetailBroker = MoviesDetailBroker(tmdbDetailSource, omdbDetailSource)
+    private val moviesDetailBroker = MoviesDetailBroker(
+        tmdbSource = tmdbSource,
+        omdbSource = omdbDetailSource
+    )
+
+    // ✅ Remote data source con TMDB para lista y broker para detalle
     private val moviesRemoteDataSource = MoviesRemoteDataSourceImpl(
-        moviesListSource = tmdbListSource,
+        moviesListSource = tmdbSource,
         moviesDetailSource = moviesDetailBroker
     )
 
@@ -79,6 +82,4 @@ object MoviesDependencyInjector {
     fun getDetailViewModel(): DetailViewModel {
         return viewModel { DetailViewModel(GetMovieDetailUseCaseImpl(repository)) }
     }
-
-
 }

@@ -1,6 +1,6 @@
 package edu.dyds.movies.data
 
-import edu.dyds.movies.data.external.MoviesRemoteDataSource
+import edu.dyds.movies.data.external.MoviesExternalDataSource
 import edu.dyds.movies.data.local.MoviesLocalDataSource
 import edu.dyds.movies.domain.entity.Movie
 import edu.dyds.movies.fakes.TestDataFactory
@@ -116,7 +116,7 @@ class MovieRepositoryTest {
     class FakeRemoteDataSource(
         private val movies: List<Movie> = emptyList(),
         var shouldThrow: Boolean = false
-    ) : MoviesRemoteDataSource {
+    ) : MoviesExternalDataSource {
         override suspend fun getPopularMovies(): List<Movie> {
             if (shouldThrow) throw RuntimeException("Remote Error")
             return movies

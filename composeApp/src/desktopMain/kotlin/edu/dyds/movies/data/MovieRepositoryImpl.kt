@@ -1,12 +1,12 @@
 package edu.dyds.movies.data
 
 import edu.dyds.movies.data.local.MoviesLocalDataSource
-import edu.dyds.movies.data.external.MoviesRemoteDataSource
+import edu.dyds.movies.data.external.MoviesExternalDataSource
 import edu.dyds.movies.domain.entity.Movie
 import edu.dyds.movies.domain.repository.MoviesRepository
 
 class MoviesRepositoryImpl(
-    private val remoteDataSource: MoviesRemoteDataSource,
+    private val remoteDataSource: MoviesExternalDataSource,
     private val localDataSource: MoviesLocalDataSource
 ) : MoviesRepository {
 
@@ -28,8 +28,7 @@ class MoviesRepositoryImpl(
     override suspend fun getMovieDetails(title: String): Movie? {
         println("BUSCANDO DETALLES PARA: $title")
         return try {
-            localDataSource.getFromTitle(title) ?:
-                remoteDataSource.getMovieDetails(title)
+            remoteDataSource.getMovieDetails(title)
         } catch (e: Exception) {
             e.message?.let { println(it) }
             null

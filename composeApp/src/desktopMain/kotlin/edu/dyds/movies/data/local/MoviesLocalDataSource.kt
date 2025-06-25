@@ -8,5 +8,4 @@ interface MoviesLocalDataSource {
     fun isEmpty(): Boolean
     fun saveAll(movies: List<Movie>)
     fun clear()
-    fun getFromTitle(title: String): Movie?
 }
