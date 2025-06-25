@@ -20,6 +20,6 @@ class MoviesLocalDataSourceImpl : MoviesLocalDataSource {
 
     override fun getFromTitle(title: String): Movie? {
         println("Buscando en localDataSource con título: $title")
-        return null
+        return cachedMovies.find { movie -> movie.title.equals(title, ignoreCase = true) }
     }
 }

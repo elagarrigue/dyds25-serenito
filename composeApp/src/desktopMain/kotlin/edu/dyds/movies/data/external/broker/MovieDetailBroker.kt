@@ -19,7 +19,7 @@ class MoviesDetailBroker(
             else -> null
         }
 
-        println("🎞️ Resultado combinado para '$title':\n${movie?.overview ?: "Ningún resultado"}")
+        println("Resultado combinado para '$title':\n${movie?.overview ?: "Ningún resultado"}")
         return movie
     }
 
