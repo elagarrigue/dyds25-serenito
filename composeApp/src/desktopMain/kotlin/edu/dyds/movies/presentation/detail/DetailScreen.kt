@@ -56,11 +56,16 @@ fun DetailScreen(
                     )
                 }
             ) { padding ->
-                LoadingIndicator(enabled = state.isLoading, modifier = Modifier.padding(padding))
-
                 when {
-                    state.movie != null -> MovieDetail(movie = state.movie!!, modifier = Modifier.padding(padding))
-                    state.isLoading -> NoResults { viewModel.getMovieDetail(title) }
+                    state.isLoading -> {
+                        LoadingIndicator(enabled = true, modifier = Modifier.padding(padding))
+                    }
+                    state.movie != null -> {
+                        MovieDetail(movie = state.movie!!, modifier = Modifier.padding(padding))
+                    }
+                    else -> {
+                        NoResults { viewModel.getMovieDetail(title) }
+                    }
                 }
             }
         }
