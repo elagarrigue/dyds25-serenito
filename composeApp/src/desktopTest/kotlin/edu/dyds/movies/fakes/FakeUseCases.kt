@@ -8,7 +8,7 @@ import edu.dyds.movies.domain.usecase.GetPopularMoviesUseCase
 class FakeSuccessDetailUseCase(
     private val movie: Movie = TestDataFactory.createMovie(42)
 ) : GetMovieDetailUseCase {
-    override suspend fun invoke(id: Int): Movie? = movie
+    override suspend fun invoke(title: String): Movie? = movie
 }
 
 class FakeSuccessPopularMoviesUseCase(

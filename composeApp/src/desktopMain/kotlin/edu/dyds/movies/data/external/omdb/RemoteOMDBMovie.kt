@@ -6,25 +6,28 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class RemoteOMDBMovie(
-    @SerialName("Title") val title: String,
-    @SerialName("Plot") val plot: String,
-    @SerialName("Released") val releaseDate: String,
-    @SerialName("Poster") val posterUrl: String,
-    @SerialName("Language") val language: String,
-    @SerialName("imdbRating") val voteAverageStr: String
+    @SerialName("Response") val response: String,
+    @SerialName("Error") val error: String? = null,
+    @SerialName("Title") val title: String? = null,
+    @SerialName("Plot") val plot: String? = null,
+    @SerialName("imdbRating") val imdbRating: String? = null
 ) {
-    fun toDomainMovie(): Movie{
+    fun isSuccess() = response.equals("True", ignoreCase = true)
+
+    fun toDomainMovie(): Movie? {
+        if (!isSuccess()) return null
+
         return Movie(
             id = 0,
-            title = title,
-            overview = plot,
-            releaseDate = releaseDate,
-            poster = posterUrl,
+            title = title ?: "Título desconocido",
+            overview = plot ?: "Sin descripción",
+            releaseDate = "Fecha desconocida",
+            poster = "",
             backdrop = null,
-            originalTitle = title,
-            originalLanguage = language,
+            originalTitle = title ?: "Título desconocido",
+            originalLanguage = "N/A",
             popularity = 0.0,
-            voteAverage = voteAverageStr.toDoubleOrNull() ?: 0.0
+            voteAverage = imdbRating?.toDoubleOrNull() ?: 0.0
         )
     }
 }

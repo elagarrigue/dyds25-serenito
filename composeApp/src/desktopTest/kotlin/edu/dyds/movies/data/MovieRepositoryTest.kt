@@ -1,6 +1,7 @@
 package edu.dyds.movies.data
 
-import edu.dyds.movies.data.external.MoviesExternalDataSource
+import edu.dyds.movies.data.external.MoviesRemoteDataSource
+import edu.dyds.movies.data.external.contracts.MoviesDetailExternalSource
 import edu.dyds.movies.data.local.MoviesLocalDataSource
 import edu.dyds.movies.domain.entity.Movie
 import edu.dyds.movies.fakes.TestDataFactory
@@ -36,7 +37,6 @@ class MovieRepositoryTest {
 
     @Test
     fun `getPopularMovies fetches from remote if local is empty`() = runTest {
-        // Reconfigurar local y remote para este test
         local = FakeLocalDataSource(movies = mutableListOf())
         remote = FakeRemoteDataSource(movies = listOf(sampleMovie))
         repository = MoviesRepositoryImpl(remote, local)
@@ -45,7 +45,7 @@ class MovieRepositoryTest {
 
         Assert.assertEquals(1, result.size)
         Assert.assertEquals(sampleMovie.title, result.first().title)
-        Assert.assertEquals(1, local.getAll().size)  // Verificamos que guardó en local
+        Assert.assertEquals(1, local.getAll().size)
     }
 
     @Test
@@ -60,35 +60,16 @@ class MovieRepositoryTest {
     }
 
     @Test
-    fun `getMovieDetails returns local movie if present`() = runTest {
-        val result = repository.getMovieDetails(sampleMovie.id)
-
-        Assert.assertNotNull(result)
-        Assert.assertEquals(sampleMovie.title, result?.title)
-    }
-
-    @Test
-    fun `getMovieDetails returns remote movie if not found locally`() = runTest {
-        local = FakeLocalDataSource(movies = mutableListOf())
-        remote = FakeRemoteDataSource(movies = listOf(sampleMovie))
-        repository = MoviesRepositoryImpl(remote, local)
-
-        val result = repository.getMovieDetails(sampleMovie.id)
-
-        Assert.assertNotNull(result)
-        Assert.assertEquals(sampleMovie.title, result?.title)
-    }
-
-    @Test
     fun `getMovieDetails returns null on error`() = runTest {
         local = FakeLocalDataSource(shouldThrow = true)
         remote = FakeRemoteDataSource()
         repository = MoviesRepositoryImpl(remote, local)
 
-        val result = repository.getMovieDetails(sampleMovie.id)
+        val result = repository.getMovieDetails(sampleMovie.title)
 
         Assert.assertNull(result)
     }
+
 
 
     class FakeLocalDataSource(
@@ -106,8 +87,6 @@ class MovieRepositoryTest {
 
         override fun getAll(): List<Movie> = movies
 
-        override fun getFromId(id: Int): Movie? = movies.find { it.id == id }
-
         override fun clear() {
             movies.clear()
         }
@@ -116,15 +95,42 @@ class MovieRepositoryTest {
     class FakeRemoteDataSource(
         private val movies: List<Movie> = emptyList(),
         var shouldThrow: Boolean = false
-    ) : MoviesExternalDataSource {
+    ) : MoviesRemoteDataSource {
         override suspend fun getPopularMovies(): List<Movie> {
             if (shouldThrow) throw RuntimeException("Remote Error")
             return movies
         }
 
-        override suspend fun getMovieDetails(id: Int): Movie {
+        override suspend fun getMovieDetails(title: String): Movie {
             if (shouldThrow) throw RuntimeException("Remote Error")
-            return movies.find { it.id == id } ?: throw RuntimeException("Movie not found")
+            return movies.find { it.title == title } ?: throw RuntimeException("Movie not found")
         }
     }
+
+    class FakeMoviesDetailBroker(
+        private val tmdbMovie: Movie? = null,
+        private val omdbMovie: Movie? = null
+    ) : MoviesDetailExternalSource {
+
+        override suspend fun getMovieByTitle(title: String): Movie? {
+            return when {
+                tmdbMovie != null && omdbMovie != null -> Movie(
+                    id = tmdbMovie.id,
+                    title = tmdbMovie.title,
+                    overview = "TMDB: ${tmdbMovie.overview}\n\nOMDB: ${omdbMovie.overview}",
+                    releaseDate = tmdbMovie.releaseDate,
+                    poster = tmdbMovie.poster,
+                    backdrop = tmdbMovie.backdrop,
+                    originalTitle = tmdbMovie.originalTitle,
+                    originalLanguage = tmdbMovie.originalLanguage,
+                    popularity = (tmdbMovie.popularity + omdbMovie.popularity) / 2.0,
+                    voteAverage = (tmdbMovie.voteAverage + omdbMovie.voteAverage) / 2.0
+                )
+                tmdbMovie != null -> tmdbMovie.copy(overview = "TMDB: ${tmdbMovie.overview}")
+                omdbMovie != null -> omdbMovie.copy(overview = "OMDB: ${omdbMovie.overview}")
+                else -> null
+            }
+        }
+    }
+
 }

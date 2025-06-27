@@ -8,8 +8,6 @@ import org.junit.Before
 import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
-import kotlin.test.assertNotNull
-import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -41,20 +39,6 @@ class LocalDataSourceTest {
         val allMovies = localDataSource.getAll()
         assertEquals(1, allMovies.size)
         assertEquals(fakeMovie, allMovies[0])
-    }
-
-    @Test
-    fun `getFromId returns the matching movie if exists`() = runTest {
-        localDataSource.saveAll(listOf(fakeMovie))
-        val movie = localDataSource.getFromId(1)
-        assertNotNull(movie)
-        assertEquals(fakeMovie, movie)
-    }
-
-    @Test
-    fun `getFromId returns null if the movie doesn't exist`() = runTest {
-        val movie = localDataSource.getFromId(999)
-        assertNull(movie)
     }
 
     @Test

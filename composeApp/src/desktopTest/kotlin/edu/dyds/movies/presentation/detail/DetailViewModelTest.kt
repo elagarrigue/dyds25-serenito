@@ -45,7 +45,7 @@ class DetailViewModelTest {
             }
         }
 
-        viewModel.getMovieDetail(1)
+        viewModel.getMovieDetail("TestFilm")
         advanceUntilIdle()
 
         assertEquals(
