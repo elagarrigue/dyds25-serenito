@@ -5,25 +5,26 @@ import edu.dyds.movies.domain.entity.QualifiedMovie
 
 object TestDataFactory {
 
-    fun createMovie(id: Int): Movie {
+    fun createMovie(title: String): Movie {
         return Movie(
-            id = id,
-            title = "Title $id",
-            overview = "Overview $id",
+            id = title.hashCode(),
+            title = title,
+            overview = "Overview of $title",
             releaseDate = "2023-01-01",
-            poster = "poster_$id",
+            poster = "poster_${title.replace(" ", "_")}",
             backdrop = null,
-            originalTitle = "Original Title $id",
+            originalTitle = "Original $title",
             originalLanguage = "en",
             popularity = 10.0,
             voteAverage = 8.0
         )
     }
 
-    fun createQualifiedMovie(id: Int, isGood: Boolean = true): QualifiedMovie {
+    fun createQualifiedMovie(title: String, isGood: Boolean = true): QualifiedMovie {
         return QualifiedMovie(
-            movie = createMovie(id),
+            movie = createMovie(title),
             isGoodMovie = isGood
         )
     }
 }
+

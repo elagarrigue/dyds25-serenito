@@ -1,7 +1,6 @@
 package edu.dyds.movies.data
 
 import edu.dyds.movies.data.external.MoviesRemoteDataSource
-import edu.dyds.movies.data.external.contracts.MoviesDetailExternalSource
 import edu.dyds.movies.data.local.MoviesLocalDataSource
 import edu.dyds.movies.domain.entity.Movie
 import edu.dyds.movies.fakes.TestDataFactory
@@ -21,7 +20,7 @@ class MovieRepositoryTest {
 
     @Before
     fun setup() {
-        sampleMovie = TestDataFactory.createMovie(1)
+        sampleMovie = TestDataFactory.createMovie("Title 1")
         local = FakeLocalDataSource(movies = mutableListOf(sampleMovie))
         remote = FakeRemoteDataSource()
         repository = MoviesRepositoryImpl(remote, local)
@@ -60,6 +59,17 @@ class MovieRepositoryTest {
     }
 
     @Test
+    fun `getMovieDetails returns remote movie`() = runTest {
+        remote = FakeRemoteDataSource(movies = listOf(sampleMovie))
+        repository = MoviesRepositoryImpl(remote, local)
+
+        val result = repository.getMovieDetails(sampleMovie.title)
+
+        Assert.assertNotNull(result)
+        Assert.assertEquals(sampleMovie.title, result?.title)
+    }
+
+    @Test
     fun `getMovieDetails returns null on error`() = runTest {
         local = FakeLocalDataSource(shouldThrow = true)
         remote = FakeRemoteDataSource()
@@ -69,8 +79,6 @@ class MovieRepositoryTest {
 
         Assert.assertNull(result)
     }
-
-
 
     class FakeLocalDataSource(
         var movies: MutableList<Movie> = mutableListOf(),
@@ -104,32 +112,6 @@ class MovieRepositoryTest {
         override suspend fun getMovieDetails(title: String): Movie {
             if (shouldThrow) throw RuntimeException("Remote Error")
             return movies.find { it.title == title } ?: throw RuntimeException("Movie not found")
-        }
-    }
-
-    class FakeMoviesDetailBroker(
-        private val tmdbMovie: Movie? = null,
-        private val omdbMovie: Movie? = null
-    ) : MoviesDetailExternalSource {
-
-        override suspend fun getMovieByTitle(title: String): Movie? {
-            return when {
-                tmdbMovie != null && omdbMovie != null -> Movie(
-                    id = tmdbMovie.id,
-                    title = tmdbMovie.title,
-                    overview = "TMDB: ${tmdbMovie.overview}\n\nOMDB: ${omdbMovie.overview}",
-                    releaseDate = tmdbMovie.releaseDate,
-                    poster = tmdbMovie.poster,
-                    backdrop = tmdbMovie.backdrop,
-                    originalTitle = tmdbMovie.originalTitle,
-                    originalLanguage = tmdbMovie.originalLanguage,
-                    popularity = (tmdbMovie.popularity + omdbMovie.popularity) / 2.0,
-                    voteAverage = (tmdbMovie.voteAverage + omdbMovie.voteAverage) / 2.0
-                )
-                tmdbMovie != null -> tmdbMovie.copy(overview = "TMDB: ${tmdbMovie.overview}")
-                omdbMovie != null -> omdbMovie.copy(overview = "OMDB: ${omdbMovie.overview}")
-                else -> null
-            }
         }
     }
 

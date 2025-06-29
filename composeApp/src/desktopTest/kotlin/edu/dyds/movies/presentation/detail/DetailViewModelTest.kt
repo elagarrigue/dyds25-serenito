@@ -34,7 +34,7 @@ class DetailViewModelTest {
 
     @Test
     fun `when getMovieDetail succeeds, the state emits loading and then data`() = runTest {
-        val movie = TestDataFactory.createMovie(1)
+        val movie = TestDataFactory.createMovie("Title 1")
         val viewModel = DetailViewModel(FakeSuccessDetailUseCase(movie))
 
         val events = mutableListOf<DetailState>()

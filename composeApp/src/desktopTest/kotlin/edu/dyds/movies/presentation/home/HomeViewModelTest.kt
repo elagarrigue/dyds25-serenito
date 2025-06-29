@@ -35,8 +35,8 @@ class HomeViewModelTest {
     @Test
     fun `getAllMovies should emit loading and data states`() = runTest {
         val movies = listOf(
-            TestDataFactory.createQualifiedMovie(1),
-            TestDataFactory.createQualifiedMovie(2)
+            TestDataFactory.createQualifiedMovie("Title 1"),
+            TestDataFactory.createQualifiedMovie("Title 2")
         )
         val viewModel = HomeViewModel(FakeSuccessPopularMoviesUseCase(movies))
 

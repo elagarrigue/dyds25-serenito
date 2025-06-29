@@ -13,7 +13,7 @@ class GetMovieDetailUseCaseTest {
 
     @Test
     fun `invoke should return movie from repository`() = runBlocking {
-        val movie = TestDataFactory.createMovie(1)
+        val movie = TestDataFactory.createMovie("Title 1")
         fakeRepository.movieToReturn = movie
 
         val result = useCase.invoke("TestFilm")
