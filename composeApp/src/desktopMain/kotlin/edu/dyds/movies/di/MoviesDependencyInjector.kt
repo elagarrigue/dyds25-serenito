@@ -64,7 +64,6 @@ object MoviesDependencyInjector {
         omdbSource = omdbDetailSource
     )
 
-    // ✅ Remote data source con TMDB para lista y broker para detalle
     private val moviesRemoteDataSource = MoviesRemoteDataSourceImpl(
         moviesListSource = tmdbSource,
         moviesDetailSource = moviesDetailBroker
