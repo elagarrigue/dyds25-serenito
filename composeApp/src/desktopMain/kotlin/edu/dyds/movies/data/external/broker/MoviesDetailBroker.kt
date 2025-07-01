@@ -19,8 +19,6 @@ class MoviesDetailBroker(
             else -> null
         }
 
-        println("Resultado combinado para '$title':\n${movie?.overview ?: "Ningún resultado"}")
-        println(omdb?.voteAverage ?: 0.0)
         return movie
     }
 
