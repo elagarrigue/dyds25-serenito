@@ -26,7 +26,6 @@ class MoviesRepositoryImpl(
     }
 
     override suspend fun getMovieDetails(title: String): Movie? {
-        println("BUSCANDO DETALLES PARA: $title")
         return try {
             remoteDataSource.getMovieDetails(title)
         } catch (e: Exception) {
