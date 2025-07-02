@@ -18,7 +18,4 @@ class MoviesLocalDataSourceImpl : MoviesLocalDataSource {
         cachedMovies.clear()
     }
 
-    override fun getFromId(id: Int): Movie? {
-        return cachedMovies.find { movie -> movie.id == id }
-    }
 }

@@ -34,14 +34,14 @@ import org.jetbrains.compose.resources.stringResource
 @Composable
 fun DetailScreen(
     viewModel: DetailViewModel,
-    movieId: Int,
+    title: String,
     onBack: () -> Unit
 ) {
     val state by viewModel.state.collectAsState()
 
-    LaunchedEffect(movieId) {
+    LaunchedEffect(title) {
         if (viewModel.state.value.movie == null) {
-            viewModel.getMovieDetail(movieId)
+            viewModel.getMovieDetail(title)
         }
     }
 
@@ -56,11 +56,16 @@ fun DetailScreen(
                     )
                 }
             ) { padding ->
-                LoadingIndicator(enabled = state.isLoading, modifier = Modifier.padding(padding))
-
                 when {
-                    state.movie != null -> MovieDetail(movie = state.movie!!, modifier = Modifier.padding(padding))
-                    state.isLoading -> NoResults { viewModel.getMovieDetail(movieId) }
+                    state.isLoading -> {
+                        LoadingIndicator(enabled = true, modifier = Modifier.padding(padding))
+                    }
+                    state.movie != null -> {
+                        MovieDetail(movie = state.movie!!, modifier = Modifier.padding(padding))
+                    }
+                    else -> {
+                        NoResults { viewModel.getMovieDetail(title) }
+                    }
                 }
             }
         }

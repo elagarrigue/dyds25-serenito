@@ -14,9 +14,9 @@ class GetPopularMoviesUseCaseTest {
     @Test
     fun `invoke returns sorted and mapped qualified movies`() = runBlocking {
         val movies = listOf(
-            TestDataFactory.createMovie(1).copy(voteAverage = 5.9),
-            TestDataFactory.createMovie(2).copy(voteAverage = 8.0),
-            TestDataFactory.createMovie(3).copy(voteAverage = 6.0)
+            TestDataFactory.createMovie("Title 1").copy(voteAverage = 5.9),
+            TestDataFactory.createMovie("Title 2").copy(voteAverage = 8.0),
+            TestDataFactory.createMovie("Title 3").copy(voteAverage = 6.0)
         )
         fakeRepository.popularMoviesToReturn = movies
 
@@ -24,9 +24,9 @@ class GetPopularMoviesUseCaseTest {
 
         Assert.assertTrue(fakeRepository.getPopularMoviesCalled)
         Assert.assertEquals(3, result.size)
-        Assert.assertEquals(2, result[0].movie.id)
-        Assert.assertEquals(3, result[1].movie.id)
-        Assert.assertEquals(1, result[2].movie.id)
+        Assert.assertEquals("Title 2", result[0].movie.title)
+        Assert.assertEquals("Title 3", result[1].movie.title)
+        Assert.assertEquals("Title 1", result[2].movie.title)
         Assert.assertTrue(result[0].isGoodMovie)
         Assert.assertTrue(result[1].isGoodMovie)
         Assert.assertFalse(result[2].isGoodMovie)

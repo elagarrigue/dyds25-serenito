@@ -13,22 +13,22 @@ class GetMovieDetailUseCaseTest {
 
     @Test
     fun `invoke should return movie from repository`() = runBlocking {
-        val movie = TestDataFactory.createMovie(1)
+        val movie = TestDataFactory.createMovie("Title 1")
         fakeRepository.movieToReturn = movie
 
-        val result = useCase.invoke(1)
+        val result = useCase.invoke("TestFilm")
 
         Assert.assertEquals(movie, result)
-        Assert.assertEquals(1, fakeRepository.lastIdRequested)
+        Assert.assertEquals("TestFilm", fakeRepository.lastTitleRequested)
     }
 
     @Test
     fun `invoke should return null when repository returns null`() = runBlocking {
         fakeRepository.movieToReturn = null
 
-        val result = useCase.invoke(999)
+        val result = useCase.invoke("NoFilm")
 
         Assert.assertNull(result)
-        Assert.assertEquals(999, fakeRepository.lastIdRequested)
+        Assert.assertEquals("NoFilm", fakeRepository.lastTitleRequested)
     }
 }

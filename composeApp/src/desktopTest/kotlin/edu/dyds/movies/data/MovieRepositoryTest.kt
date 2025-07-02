@@ -20,7 +20,7 @@ class MovieRepositoryTest {
 
     @Before
     fun setup() {
-        sampleMovie = TestDataFactory.createMovie(1)
+        sampleMovie = TestDataFactory.createMovie("Title 1")
         local = FakeLocalDataSource(movies = mutableListOf(sampleMovie))
         remote = FakeRemoteDataSource()
         repository = MoviesRepositoryImpl(remote, local)
@@ -36,7 +36,6 @@ class MovieRepositoryTest {
 
     @Test
     fun `getPopularMovies fetches from remote if local is empty`() = runTest {
-        // Reconfigurar local y remote para este test
         local = FakeLocalDataSource(movies = mutableListOf())
         remote = FakeRemoteDataSource(movies = listOf(sampleMovie))
         repository = MoviesRepositoryImpl(remote, local)
@@ -45,7 +44,7 @@ class MovieRepositoryTest {
 
         Assert.assertEquals(1, result.size)
         Assert.assertEquals(sampleMovie.title, result.first().title)
-        Assert.assertEquals(1, local.getAll().size)  // Verificamos que guardó en local
+        Assert.assertEquals(1, local.getAll().size)
     }
 
     @Test
@@ -60,20 +59,11 @@ class MovieRepositoryTest {
     }
 
     @Test
-    fun `getMovieDetails returns local movie if present`() = runTest {
-        val result = repository.getMovieDetails(sampleMovie.id)
-
-        Assert.assertNotNull(result)
-        Assert.assertEquals(sampleMovie.title, result?.title)
-    }
-
-    @Test
-    fun `getMovieDetails returns remote movie if not found locally`() = runTest {
-        local = FakeLocalDataSource(movies = mutableListOf())
+    fun `getMovieDetails returns remote movie`() = runTest {
         remote = FakeRemoteDataSource(movies = listOf(sampleMovie))
         repository = MoviesRepositoryImpl(remote, local)
 
-        val result = repository.getMovieDetails(sampleMovie.id)
+        val result = repository.getMovieDetails(sampleMovie.title)
 
         Assert.assertNotNull(result)
         Assert.assertEquals(sampleMovie.title, result?.title)
@@ -85,11 +75,10 @@ class MovieRepositoryTest {
         remote = FakeRemoteDataSource()
         repository = MoviesRepositoryImpl(remote, local)
 
-        val result = repository.getMovieDetails(sampleMovie.id)
+        val result = repository.getMovieDetails(sampleMovie.title)
 
         Assert.assertNull(result)
     }
-
 
     class FakeLocalDataSource(
         var movies: MutableList<Movie> = mutableListOf(),
@@ -106,8 +95,6 @@ class MovieRepositoryTest {
 
         override fun getAll(): List<Movie> = movies
 
-        override fun getFromId(id: Int): Movie? = movies.find { it.id == id }
-
         override fun clear() {
             movies.clear()
         }
@@ -122,9 +109,10 @@ class MovieRepositoryTest {
             return movies
         }
 
-        override suspend fun getMovieDetails(id: Int): Movie {
+        override suspend fun getMovieDetails(title: String): Movie {
             if (shouldThrow) throw RuntimeException("Remote Error")
-            return movies.find { it.id == id } ?: throw RuntimeException("Movie not found")
+            return movies.find { it.title == title } ?: throw RuntimeException("Movie not found")
         }
     }
+
 }
